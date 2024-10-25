@@ -35,7 +35,7 @@ jobs:
         env:
           COMMITS: ${{ toJSON(github.event.commits) }}
         run: |
-          echo "depth=$(echo $COMMITS | jq '. | length')" >> "$GITHUB_OUTPUT"
+          echo "depth=$(echo $COMMITS | jq '. | length + 1')" >> "$GITHUB_OUTPUT"
 
       - name: Checkout Repository
         uses: actions/checkout@v4
