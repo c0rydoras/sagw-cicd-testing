@@ -1,5 +1,5 @@
-# ---
-name: Create Tags
+---
+name: Create Releases
 
 on:
   push:
@@ -11,9 +11,25 @@ on:
       - caluma/version.txt
 
 jobs:
+  calculate-fetch-depth:
+    runs-on: ubuntu-latest
+    name: Calculate Fetch Depth
+
+    outputs:
+      depth: ${{ steps.depth.outputs.depth }}
+
+    steps:
+      - name: Calculate Fetch Depth
+        id: depth
+        env:
+          COMMITS: ${{ toJSON(github.event.commits) }}
+        run: |
+          echo "depth=$(echo $COMMITS | jq '. | length + 1')" >> "$GITHUB_OUTPUT"
+
   create-tags:
     runs-on: ubuntu-latest
     name: Create Tags
+    needs: calculate-fetch-depth
 
     permissions:
       contents: write
@@ -34,17 +50,10 @@ jobs:
             version-file: compose.yaml
             command: yq '.x-version'
     steps:
-      - name: Calculate Fetch Depth
-        id: depth
-        env:
-          COMMITS: ${{ toJSON(github.event.commits) }}
-        run: |
-          echo "depth=$(echo $COMMITS | jq '. | length + 1')" >> "$GITHUB_OUTPUT"
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ steps.depth.outputs.depth }}
+          fetch-depth: ${{ needs.calculate-fetch-depth.outputs.depth }}
 
       - name: Install python
         if: contains(matrix.config.version-file, 'toml')
@@ -61,18 +70,6 @@ jobs:
         id: before
         run: |
           echo "version=$(git show ${{ github.event.before }}:${{ matrix.config.version-file }} | ${{ matrix.config.command }})" >> "$GITHUB_OUTPUT"
-
-      # - name: Create tag
-      #   if: steps.after.outputs.version != steps.before.outputs.version
-      #   uses: actions/github-script@v5
-      #   with:
-      #     script: |
-      #       github.rest.git.createRef({
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         ref: 'refs/tags/${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}',
-      #         sha: context.sha
-      #       })
 
       - name: Create release
         if: steps.after.outputs.version != steps.before.outputs.version
