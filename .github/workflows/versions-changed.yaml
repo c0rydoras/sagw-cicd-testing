@@ -4,11 +4,11 @@ name: Versions Changed
 on:
   push:
     branches: [main]
-    paths:
-      - compose.yaml
-      - ember/package.json
-      - api/pyproject.toml
-      - caluma/version.txt
+    # paths:
+    #   - compose.yaml
+    #   - ember/package.json
+    #   - api/pyproject.toml
+    #   - caluma/version.txt
 
 jobs:
   check-version:
@@ -32,5 +32,5 @@ jobs:
       - name: Check some stuff
         run: |
           jq --help
-          yq --help
+          # yq --help
           tq --help
