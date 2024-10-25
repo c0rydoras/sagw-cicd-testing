@@ -7,10 +7,18 @@ on:
       - published
 
 jobs:
-  stuff:
+  application:
+    if: "!contains(github.ref_name, '-')"
+    runs-on: ubuntu-latest
+    name: Release Application
+    steps:
+      - run: |
+          echo "Application v${{ github.ref_name }} :tada:"
+
+  service:
     if: contains(github.ref_name, '-')
     runs-on: ubuntu-latest
-    name: Stuff
+    name: Release Service
     env:
       TAG_NAME: ${{ github.ref_name }}
     steps:
