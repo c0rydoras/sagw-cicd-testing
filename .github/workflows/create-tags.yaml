@@ -62,14 +62,27 @@ jobs:
         run: |
           echo "version=$(git show ${{ github.event.before }}:${{ matrix.config.version-file }} | ${{ matrix.config.command }})" >> "$GITHUB_OUTPUT"
 
-      - name: Create tag
+      # - name: Create tag
+      #   if: steps.after.outputs.version != steps.before.outputs.version
+      #   uses: actions/github-script@v5
+      #   with:
+      #     script: |
+      #       github.rest.git.createRef({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         ref: 'refs/tags/${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}',
+      #         sha: context.sha
+      #       })
+
+      - name: Create release
         if: steps.after.outputs.version != steps.before.outputs.version
-        uses: actions/github-script@v5
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}',
-              sha: context.sha
-            })
+          tag_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
+          release_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
+          body: |
+            Whoa!
+          draft: false
+          prerelease: false
