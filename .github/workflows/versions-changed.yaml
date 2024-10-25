@@ -30,10 +30,17 @@ jobs:
             version-file: compose.yaml
             command: yq '.x-version'
     steps:
+      - name: Calculate Fetch Depth
+        id: depth
+        env:
+          COMMITS: ${{ toJSON(github.event.commits) }}
+        run: |
+          echo "depth=$(echo $COMMITS | jq '. | length')" >> "$GITHUB_OUTPUT"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.before }}
+          fetch-depth: ${{ steps.depth.depth }}
 
       - name: Install python
         if: contains(matrix.config.version-file, 'toml')
