@@ -1,19 +1,19 @@
 # ---
-name: Versions Changed
+name: Create Tags
 
 on:
   push:
     branches: [main]
-    # paths:
-    #   - compose.yaml
-    #   - ember/package.json
-    #   - api/pyproject.toml
-    #   - caluma/version.txt
+    paths:
+      - compose.yaml
+      - ember/package.json
+      - api/pyproject.toml
+      - caluma/version.txt
 
 jobs:
-  get-versions:
+  create-tags:
     runs-on: ubuntu-latest
-    name: Get Versions
+    name: Create Tags
 
     permissions:
       contents: write
