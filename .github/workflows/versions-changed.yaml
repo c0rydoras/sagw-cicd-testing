@@ -1,4 +1,4 @@
----
+# ---
 name: Versions Changed
 
 on:
@@ -65,9 +65,9 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     needs: get-versions
-    if: needs.get-versions.new != needs.get-versions.old
+    if: needs.get-versions.outputs.new != needs.get-versions.outputs.old
     env:
-      TAG_NAME: ${{matrix.config.name == 'mysagw' && needs.get-versions.new || format('{0}-{1}', matrix.config.name, needs.get-versions.new}}
+      TAG_NAME: ${{matrix.config.name == 'mysagw' && needs.get-versions.outputs.new || format('{0}-{1}', matrix.config.name, needs.get-versions.outputs.new}}
     steps:
       - run: |
           echo "Creating tag && release: $TAG_NAME"
