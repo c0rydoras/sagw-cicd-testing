@@ -67,7 +67,7 @@ jobs:
     needs: get-versions
     if: needs.get-versions.outputs.new != needs.get-versions.outputs.old
     env:
-      TAG_NAME: ${{matrix.config.name == 'mysagw' && needs.get-versions.outputs.new || format('{0}-{1}', matrix.config.name, needs.get-versions.outputs.new}}
+      TAG_NAME: ${{ matrix.config.name == 'mysagw' && needs.get-versions.outputs.new || format('{0}-{1}', matrix.config.name, needs.get-versions.outputs.new) }}
     steps:
       - run: |
           echo "Creating tag && release: $TAG_NAME"
