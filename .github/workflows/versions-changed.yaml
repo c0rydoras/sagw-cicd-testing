@@ -33,7 +33,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install python
+        if: contains(matrix.config.version-file, 'toml')
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Check some stuff
+        env:
+          F: ${{ matrix.config.version-file }}
         run: |
-          export F=${{ matrix.config.version-file }}
           ${{ matrix.config.command }}
