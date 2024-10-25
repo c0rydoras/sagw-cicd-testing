@@ -40,7 +40,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: ${{ steps.depth.depth }}
+          fetch-depth: ${{ steps.depth.outputs.depth }}
 
       - name: Install python
         if: contains(matrix.config.version-file, 'toml')
