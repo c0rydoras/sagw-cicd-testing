@@ -19,18 +19,21 @@ jobs:
         config:
           - name: api
             version-file: api/pyproject.toml
+            command: python -c "import tomllib; from pathlib import Path; print(tomllib.load(Path('$F').open('rb'))['tool']['poetry']['version'])"
           - name: ember
             version-file: ember/package.json
+            command: cat $F | jq -r '.version'
           - name: caluma
             version-file: caluma/version.txt
+            command: cat $F
           - name: mysagw
             version-file: compose.yaml
+            command: cat $F | yq '.x-version'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Check some stuff
         run: |
-          jq --help
-          # yq --help
-          tq --help
+          export F=${{ matrix.config.version-file }}
+          ${{ matrix.config.command }}
