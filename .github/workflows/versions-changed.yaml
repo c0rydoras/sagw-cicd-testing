@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.before }}
 
       - name: Install python
         if: contains(matrix.config.version-file, 'toml')
