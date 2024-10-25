@@ -78,7 +78,7 @@ jobs:
         if: steps.after.outputs.version != steps.before.outputs.version
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           tag_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
           release_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
