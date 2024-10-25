@@ -1,0 +1,6 @@
+[tool.poetry]
+name = "sagw"
+version = "0.0.0"
+description = "test foo bar"
+authors = [" "]
+license = "GPL-3.0-or-later"

@@ -1,0 +1,36 @@
+---
+name: Versions Changed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - compose.yaml
+      - ember/package.json
+      - api/pyproject.toml
+      - caluma/version.txt
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        config:
+          - name: api
+            version-file: api/pyproject.toml
+          - name: ember
+            version-file: ember/package.json
+          - name: caluma
+            version-file: caluma/version.txt
+          - name: mysagw
+            version-file: compose.yaml
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check some stuff
+        run: |
+          jq --help
+          yq --help
+          tq --help
