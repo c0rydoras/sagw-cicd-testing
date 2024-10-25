@@ -19,16 +19,16 @@ jobs:
         config:
           - name: api
             version-file: api/pyproject.toml
-            command: python -c "import tomllib; from pathlib import Path; print(tomllib.load(Path('$F').open('rb'))['tool']['poetry']['version'])"
+            command: python -c 'import sys; import tomllib; print(tomllib.loads(sys.stdin.read())["tool"]["poetry"]["version"])'
           - name: ember
             version-file: ember/package.json
-            command: cat $F | jq -r '.version'
+            command: jq -r '.version'
           - name: caluma
             version-file: caluma/version.txt
-            command: cat $F
+            command: cat
           - name: mysagw
             version-file: compose.yaml
-            command: cat $F | yq '.x-version'
+            command: yq '.x-version'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,8 +39,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check some stuff
-        env:
-          F: ${{ matrix.config.version-file }}
+      - name: Get new version
+        id: after
         run: |
-          ${{ matrix.config.command }}
+          echo "version=$(cat ${{ matrix.config.version-file }} | ${{ matrix.config.command }})" >> "$GITHUB_OUTPUT"
+
+      - name: Get previous version
+        id: before
+        run: |
+          echo "version=$(git show ${{ github.event.before }}:${{ matrix.config.version-file }} | ${{ matrix.config.command }})" >> "$GITHUB_OUTPUT"
+
+      - name: Show versions
+        env:
+          NEW: ${{ steps.after.outputs.version }}
+          OLD: ${{ steps.before.outputs.version }}
+        run: |
+          echo "New Version: $NEW"
+          echo "Old Version: $OLD"
