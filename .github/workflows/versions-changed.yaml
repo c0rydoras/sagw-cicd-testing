@@ -11,8 +11,9 @@ on:
     #   - caluma/version.txt
 
 jobs:
-  check-version:
+  get-versions:
     runs-on: ubuntu-latest
+    name: Get Versions
 
     strategy:
       matrix:
@@ -29,6 +30,9 @@ jobs:
           - name: mysagw
             version-file: compose.yaml
             command: yq '.x-version'
+    outputs:
+      new: ${{ steps.after.outputs.version }}
+      old: ${{ steps.before.outputs.version }}
     steps:
       - name: Calculate Fetch Depth
         id: depth
@@ -58,10 +62,12 @@ jobs:
         run: |
           echo "version=$(git show ${{ github.event.before }}:${{ matrix.config.version-file }} | ${{ matrix.config.command }})" >> "$GITHUB_OUTPUT"
 
-      - name: Show versions
-        env:
-          NEW: ${{ steps.after.outputs.version }}
-          OLD: ${{ steps.before.outputs.version }}
-        run: |
-          echo "New Version: $NEW"
-          echo "Old Version: $OLD"
+  create-release:
+    runs-on: ubuntu-latest
+    needs: get-versions
+    if: needs.get-versions.new != needs.get-versions.old
+    env:
+      TAG_NAME: ${{matrix.config.name == 'mysagw' && needs.get-versions.new || format('{0}-{1}', matrix.config.name, needs.get-versions.new}}
+    steps:
+      - run: |
+          echo "Creating tag && release: $TAG_NAME"
