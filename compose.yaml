@@ -1,12 +1,12 @@
 ---
-x-version: 1.0.69
+x-version: 1.1.0
 
 services:
   api:
-    image: ghcr.io/c0rydoras/sagwtesting/api:1.0.69
+    image: ghcr.io/c0rydoras/sagwtesting/api:1.1.0
 
   ember:
-    image: ghcr.io/c0rydoras/sagwtesting/ember:1.0.69
+    image: ghcr.io/c0rydoras/sagwtesting/ember:1.1.0
 
   caluma:
-    image: ghcr.io/c0rydoras/sagwtesting/caluma:1.0.69
+    image: ghcr.io/c0rydoras/sagwtesting/caluma:1.1.0
