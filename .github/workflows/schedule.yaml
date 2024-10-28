@@ -8,7 +8,7 @@ on:
 
 jobs:
   repo:
-    name: Lowercase {{ github.repository }}
+    name: Lowercase ${{ github.repository }}
     runs-on: ubuntu-latest
 
     outputs:
