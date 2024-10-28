@@ -88,7 +88,7 @@ jobs:
             ${{ steps.meta.outputs.labels }}
 
       - name: Sign ${{ steps.parse-tagname.outputs.service }} image and attach SBOM attestation
-        uses: adfinis/container-scanning-action@v0.2.9
+        uses: adfinis/container-scanning-action@v0.2.10
         with:
           image-ref: ghcr.io/${{ steps.repo.outputs.lower }}/${{ steps.parse-tagname.outputs.service }}
           token: ${{ secrets.GITHUB_TOKEN }}
