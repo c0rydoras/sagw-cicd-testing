@@ -79,7 +79,6 @@ jobs:
         with:
           tag_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
           release_name: ${{ matrix.config.name == 'mysagw' && steps.after.outputs.version || format('{0}-{1}', matrix.config.name, steps.after.outputs.version) }}
-          body: |
-            Whoa!
+          body: ""
           draft: false
           prerelease: false
