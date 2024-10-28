@@ -17,7 +17,7 @@ jobs:
     steps:
       - id: repo
         run: |
-          echo "lower=$(echo '${{ github.repository }}' | tr '[:upper:] [:lower:]')" >> "$GITHUB_OUTPUT"
+          echo "lower=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
 
   scan:
     strategy:
